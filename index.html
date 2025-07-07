@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>buildings Portfolio</title>
+    <title>Buildings Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -40,7 +42,6 @@
             margin-bottom: 60px;
         }
 
-        /* Updated logo styles for image */
         .logo {
             width: 60px;
             height: 60px;
@@ -48,6 +49,10 @@
             overflow: hidden;
             transition: all 0.3s ease;
             border: 2px solid #e5e5e5;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .logo:hover {
@@ -66,26 +71,11 @@
             transform: scale(1.1);
         }
 
-        /* Alternative rectangular logo style */
-        .logo-rect {
-            width: 80px;
-            height: 40px;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 1px solid #e5e5e5;
-        }
-
-        .logo-rect:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo-rect img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 5px;
+        .logo-placeholder {
+            width: 30px;
+            height: 30px;
+            background: #1a1a1a;
+            border-radius: 50%;
         }
 
         .title {
@@ -316,6 +306,65 @@
             margin-bottom: 5px;
         }
 
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        .archive-item {
+            background: white;
+            border: 1px solid #e5e5e5;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .archive-item:hover {
+            border-color: #1a1a1a;
+        }
+
+        .archive-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+
+        .archive-item:hover img {
+            filter: grayscale(0%);
+        }
+
+        .archive-content {
+            padding: 30px;
+        }
+
+        .archive-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 0;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            text-align: center;
+            padding: 60px 0;
+            color: #cc0000;
+            background: #fff5f5;
+            border: 1px solid #ffcccc;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .container {
@@ -377,87 +426,28 @@
                 font-size: 2rem;
             }
         }
-
-        /* Archive-style layout for Old buildings */
-        .archive-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 40px;
-            margin-bottom: 80px;
-        }
-
-        .archive-item {
-            background: white;
-            border: 1px solid #e5e5e5;
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        .archive-item:hover {
-            border-color: #1a1a1a;
-        }
-
-        .archive-item img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            filter: grayscale(100%);
-            transition: filter 0.3s ease;
-        }
-
-        .archive-item:hover img {
-            filter: grayscale(0%);
-        }
-
-        .archive-content {
-            padding: 30px;
-        }
-
-        .archive-title {
-            font-family: 'Crimson Text', serif;
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #1a1a1a;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 60px 0;
-            color: #666;
-            font-style: italic;
-        }
-
-        .error {
-            text-align: center;
-            padding: 60px 0;
-            color: #cc0000;
-            background: #fff5f5;
-            border: 1px solid #ffcccc;
-            border-radius: 4px;
-            margin: 20px 0;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
             <div></div>
-            <h1 class="title">Buildings in Qatar</h1>
-            <!-- Option 1: Circular logo -->
+            <h1 class="title">Qatar's Architectural Heritage </p>
+                <p>
+                    التراث المعماري في قطر</h1>
             <div class="logo">
                 <img src="file:///Users/admin/Desktop/logo/Screenshot%202025-07-04%20at%2017.37.02.png" alt="Logo">
             </div>
             
             <!-- Option 2: Rectangular logo (uncomment to use instead)
             <div class="logo-rect">
-                <img src="file:///Users/admin/Desktop/logo/Screenshot%202025-07-04%20at%2017.37.02.png" alt="Logo">
+                <img src="path/to/your/logo.png" alt="Logo">
             </div>
             -->
         </header>
 
-        <p class="subtitle">Digital archive of Doha's architectural landscape in the present and the past</p>
-
+        <p class="subtitle">Digital archive of Doha's architectural landscape in the present and the past
+        </p>
         <nav class="nav-tabs">
             <button class="tab-button active" onclick="showTab('old-buildings')">Old Buildings</button>
             <button class="tab-button" onclick="showTab('new-buildings')">New Buildings</button>
@@ -465,7 +455,7 @@
         </nav>
 
         <div id="old-buildings" class="tab-content active">
-            <h2 class="section-title">Historic buildings</h2>
+            <h2 class="section-title">Historic Buildings</h2>
             <div class="archive-meta">
                 <span class="archive-count" id="old-count">Loading...</span>
                 <span class="archive-filter">Historic Collection</span>
@@ -476,7 +466,7 @@
         </div>
 
         <div id="new-buildings" class="tab-content">
-            <h2 class="section-title">Contemporary buildings</h2>
+            <h2 class="section-title">Contemporary Buildings</h2>
             <div class="archive-meta">
                 <span class="archive-count" id="new-count">Loading...</span>
                 <span class="archive-filter">Contemporary Collection</span>
@@ -493,16 +483,15 @@
 
         <div id="concept" class="tab-content">
             <div class="concept-content">
-                <h2>About the project</h2>
+                <h2>About the Project</h2>
                 <p>
-                    buildings is more than just building structures; it's about creating spaces that inspire, function seamlessly, and respond to the needs of both people and the environment.
+                    Buildings is more than just building structures; it's about creating spaces that inspire, function seamlessly, and respond to the needs of both people and the environment.
                 </p>
                 <p>
-                    Vision:
-                    Amplifying anthropological insights to build a more just and sustainable world. 
+                    <strong>Vision:</strong> Amplifying anthropological insights to build a more just and sustainable world.
+                </p>
                 <p>
-                    Mission:
-                    Delivering trusted, compelling, and relevant anthropology stories to public audiences.
+                    <strong>Mission:</strong> Delivering trusted, compelling, and relevant anthropology stories to public audiences.
                 </p>
                 <p>
                     The integration of technology in modern buildings allows us to create buildings that are more efficient, responsive, and adaptive to changing needs. From smart building systems to advanced materials, we leverage innovation to enhance the human experience within our built environments.
@@ -515,102 +504,184 @@
     </div>
 
     <script>
-        // Configuration - Replace with your Google Sheets URLs
+        // Configuration - Updated to use OpenSheet API format
         const SHEETS_CONFIG = {
-            oldbuildings: 'https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/pub?gid=0&single=true&output=csv',
-            newbuildings: 'https://opensheet.elk.sh/1mPtpEwbURnaw733hj8pPXgFqcOW74CbS6FG87PM2C80/Sheet1'
+            // Replace with your actual sheet IDs and sheet names
+            oldBuildings: 'https://opensheet.elk.sh/1mPtpEwbURnaw733hj8pPXgFqcOW74CbS6FG87PM2C80/Sheet2',
+            newBuildings: 'https://opensheet.elk.sh/1mPtpEwbURnaw733hj8pPXgFqcOW74CbS6FG87PM2C80/Sheet1'
         };
 
         // Global variables
-        let oldbuildingsData = [];
-        let newbuildingsData = [];
+        let oldBuildingsData = [];
+        let newBuildingsData = [];
 
         // Load data when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            loadbuildingsData();
+            loadBuildingsData();
+            
+            // Initialize lightbox
+            lightbox.option({
+                'resizeDuration': 200,
+                'wrapAround': true,
+                'albumLabel': 'Image %1 of %2',
+                'showImageNumberLabel': true
+            });
         });
 
-        // Load data from Google Sheets
-        function loadbuildingsData() {
-            // Load old buildings data
-            Papa.parse(SHEETS_CONFIG.oldbuildings, {
-                download: true,
-                header: true,
-                complete: function(results) {
-                    oldbuildingsData = results.data.filter(row => row.title && row.title.trim() !== '');
-                    renderOldbuildings();
-                },
-                error: function(error) {
-                    console.error('Error loading old buildings data:', error);
-                    showError('old-buildings-grid', 'Failed to load historic buildings data');
-                }
-            });
+        // Load data from OpenSheet API
+        async function loadBuildingsData() {
+            try {
+                // Load new buildings data (this one should work with your existing sheet)
+                await loadNewBuildings();
+                
+                // Load old buildings data (you may need to create this sheet)
+                await loadOldBuildings();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
 
-            // Load new buildings data
-            Papa.parse(SHEETS_CONFIG.newbuildings, {
-                download: true,
-                header: true,
-                complete: function(results) {
-                    newbuildingsData = results.data.filter(row => row.title && row.title.trim() !== '');
-                    renderNewbuildings();
-                    updateMapMarkers();
-                },
-                error: function(error) {
-                    console.error('Error loading new buildings data:', error);
-                    showError('new-buildings-grid', 'Failed to load contemporary buildings data');
+        // Load new buildings data
+        async function loadNewBuildings() {
+            try {
+                const response = await fetch(SHEETS_CONFIG.newBuildings);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            });
+                const data = await response.json();
+                newBuildingsData = data.filter(row => row.title && row.title.trim() !== '');
+                renderNewBuildings();
+                updateMapMarkers();
+            } catch (error) {
+                console.error('Error loading new buildings data:', error);
+                showError('new-buildings-grid', 'Failed to load contemporary buildings data. Please check your Google Sheets configuration.');
+            }
+        }
+
+        // Load old buildings data
+        async function loadOldBuildings() {
+            try {
+                const response = await fetch(SHEETS_CONFIG.oldBuildings);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                oldBuildingsData = data.filter(row => row.title && row.title.trim() !== '');
+                renderOldBuildings();
+            } catch (error) {
+                console.error('Error loading old buildings data:', error);
+                // Show a more user-friendly message for old buildings
+                showError('old-buildings-grid', 'Historic buildings data not available. Please add an "OldBuildings" sheet to your Google Sheets.');
+                document.getElementById('old-count').textContent = '0 Items in Archive';
+            }
         }
 
         // Render old buildings cards
-        function renderOldbuildings() {
+        function renderOldBuildings() {
             const container = document.getElementById('old-buildings-grid');
             const countElement = document.getElementById('old-count');
             
-            if (oldbuildingsData.length === 0) {
+            if (oldBuildingsData.length === 0) {
                 container.innerHTML = '<div class="loading">No historic buildings data found</div>';
                 countElement.textContent = '0 Items in Archive';
                 return;
             }
 
-            countElement.textContent = `${oldbuildingsData.length} Items in Archive`;
+            countElement.textContent = `${oldBuildingsData.length} Items in Archive`;
             
-            container.innerHTML = oldbuildingsData.map(item => `
-                <div class="archive-item">
-                    <img src="${item.image || 'https://via.placeholder.com/400x300'}" alt="${item.title}">
-                    <div class="archive-content">
-                        <div class="project-year">${item.year || 'Unknown'}</div>
-                        <h3 class="archive-title">${item.title}</h3>
-                        <p class="archive-description">${item.description || ''}</p>
+            container.innerHTML = oldBuildingsData.map((item, index) => {
+                const images = parseImages(item.images || item.image);
+                const mainImage = images[0] || 'https://via.placeholder.com/400x300?text=Historic+Building';
+                
+                return `
+                    <div class="archive-item">
+                        ${createImageGallery(images, item.title, `old-${index}`, mainImage)}
+                        <div class="archive-content">
+                            <div class="project-year">${item.year || 'Unknown'}</div>
+                            <h3 class="archive-title">${item.title}</h3>
+                            <p class="card-description">${item.description || ''}</p>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Render new buildings cards
-        function renderNewbuildings() {
+        function renderNewBuildings() {
             const container = document.getElementById('new-buildings-grid');
             const countElement = document.getElementById('new-count');
             
-            if (newbuildingsData.length === 0) {
+            if (newBuildingsData.length === 0) {
                 container.innerHTML = '<div class="loading">No contemporary buildings data found</div>';
                 countElement.textContent = '0 Active Projects';
                 return;
             }
 
-            countElement.textContent = `${newbuildingsData.length} Active Projects`;
+            countElement.textContent = `${newBuildingsData.length} Active Projects`;
             
-            container.innerHTML = newbuildingsData.map(item => `
-                <div class="buildings-card">
-                    <img src="${item.image || 'https://via.placeholder.com/400x300'}" alt="${item.title}">
-                    <div class="card-content">
-                        <div class="project-year">${item.year || 'Recent'}</div>
-                        <h3 class="card-title">${item.title}</h3>
-                        <p class="card-description">${item.description || ''}</p>
-                        ${item.link ? `<a href="${item.link}" class="card-link" target="_blank">${item.linkText || 'View Project Details'}</a>` : ''}
+            container.innerHTML = newBuildingsData.map((item, index) => {
+                const images = parseImages(item.images || item.image);
+                const mainImage = images[0] || 'https://via.placeholder.com/400x300?text=Contemporary+Building';
+                
+                return `
+                    <div class="buildings-card">
+                        ${createImageGallery(images, item.title, `new-${index}`, mainImage)}
+                        <div class="card-content">
+                            <div class="project-year">${item.year || 'Recent'}</div>
+                            <h3 class="card-title">${item.title}</h3>
+                            <p class="card-description">${item.description || ''}</p>
+                            ${item.link ? `<a href="${item.link}" class="card-link" target="_blank" rel="noopener noreferrer">${item.linkText || 'View Project Details'}</a>` : ''}
+                        </div>
                     </div>
+                `;
+            }).join('');
+        }
+
+        // Parse images from string (comma-separated URLs)
+        function parseImages(imageString) {
+            if (!imageString) return [];
+            
+            // Split by comma and clean up each URL
+            return imageString.split(',')
+                .map(url => url.trim())
+                .filter(url => url.length > 0);
+        }
+
+        // Create image gallery with lightbox support
+        function createImageGallery(images, title, galleryId, mainImage) {
+            if (images.length === 0) {
+                return `<img src="${mainImage}" alt="${title}" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">`;
+            }
+
+            if (images.length === 1) {
+                return `<a href="${images[0]}" data-lightbox="${galleryId}" data-title="${title}">
+                    <img src="${images[0]}" alt="${title}" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
+                </a>`;
+            }
+
+            // Multiple images - create gallery
+            const mainImageHtml = `<a href="${images[0]}" data-lightbox="${galleryId}" data-title="${title} - Image 1">
+                <img src="${images[0]}" alt="${title}" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
+            </a>`;
+
+            // Hidden images for gallery
+            const hiddenImages = images.slice(1).map((img, index) => 
+                `<a href="${img}" data-lightbox="${galleryId}" data-title="${title} - Image ${index + 2}" style="display: none;"></a>`
+            ).join('');
+
+            // Image indicators
+            const indicators = images.length > 1 ? `
+                <div class="image-indicators">
+                    ${images.map((_, index) => `<span class="image-indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`).join('')}
                 </div>
-            `).join('');
+            ` : '';
+
+            return `
+                ${mainImageHtml}
+                ${hiddenImages}
+                ${indicators}
+            `;
         }
 
         // Show error message
@@ -631,7 +702,7 @@
             });
 
             // Add new markers from data
-            newbuildingsData.forEach(project => {
+            newBuildingsData.forEach(project => {
                 if (project.latitude && project.longitude) {
                     const lat = parseFloat(project.latitude);
                     const lng = parseFloat(project.longitude);
@@ -676,8 +747,8 @@
                 return;
             }
 
-            // Initialize the map
-            window.buildingsMap = L.map('map').setView([40.7128, -74.0060], 10);
+            // Initialize the map centered on Qatar
+            window.buildingsMap = L.map('map').setView([25.2854, 51.5310], 10);
 
             // Add OpenStreetMap tiles
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
