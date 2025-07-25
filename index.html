@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qatar's Architectural Heritage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 60px 0 40px;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid #e5e5e5;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo:hover {
+            transform: scale(1.1);
+            border-color: #1a1a1a;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.1);
+        }
+
+        .logo-placeholder {
+            width: 30px;
+            height: 30px;
+            background: #1a1a1a;
+            border-radius: 50%;
+        }
+        .title {
+            flex-grow: 1;
+            text-align: center;
+            font-family: 'Crimson Text', serif;
+            font-size: 3.5rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 80px;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 80px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .tab-button {
+            padding: 20px 40px;
+            border: none;
+            background: none;
+            color: #666;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+        }
+
+        .tab-button:hover {
+            color: #1a1a1a;
+        }
+
+        .tab-button.active {
+            color: #1a1a1a;
+            border-bottom-color: #1a1a1a;
+        }
+
+        .tab-content {
+            display: none;
+            min-height: 60vh;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 60px;
+            letter-spacing: -0.01em;
+        }
+
+        .buildings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 60px;
+            margin-bottom: 80px;
+        }
+
+        .buildings-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .buildings-card:hover {
+            border-color: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .buildings-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+
+        .buildings-card:hover img {
+            filter: grayscale(0%);
+        }
+
+        .card-content {
+            padding: 40px;
+        }
+
+        .card-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+            letter-spacing: -0.01em;
+        }
+
+        .card-description {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .card-link {
+            display: inline-block;
+            color: #1a1a1a;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .card-link:hover {
+            opacity: 0.7;
+        }
+
+        .concept-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        .concept-content h2 {
+            font-family: 'Crimson Text', serif;
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 40px;
+            text-align: center;
+            letter-spacing: -0.01em;
+        }
+
+        .concept-content p {
+            margin-bottom: 30px;
+            color: #444;
+            text-align: justify;
+        }
+
+        .concept-content p:first-of-type {
+            font-size: 19px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        #map {
+            height: 500px;
+            border: 1px solid #e5e5e5;
+            margin-top: 60px;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+
+        #map:hover {
+            filter: grayscale(0%);
+        }
+
+        .map-container {
+            margin-top: 80px;
+        }
+
+        .map-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+            color: #1a1a1a;
+            text-align: center;
+            letter-spacing: -0.01em;
+        }
+
+        .archive-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .archive-count {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .archive-filter {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .project-year {
+            font-size: 13px;
+            color: #999;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        .archive-item {
+            background: white;
+            border: 1px solid #e5e5e5;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .archive-item:hover {
+            border-color: #1a1a1a;
+        }
+
+        .archive-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+
+        .archive-item:hover img {
+            filter: grayscale(0%);
+        }
+
+        .archive-content {
+            padding: 30px;
+        }
+
+        .archive-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 0;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            text-align: center;
+            padding: 60px 0;
+            color: #cc0000;
+            background: #fff5f5;
+            border: 1px solid #ffcccc;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 30px;
+            }
+
+            .title {
+                font-size: 2.8rem;
+            }
+
+            .buildings-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+
+            .title {
+                font-size: 2.2rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+                border-bottom: none;
+            }
+
+            .tab-button {
+                width: 100%;
+                text-align: center;
+                border-bottom: 1px solid #e5e5e5;
+                border-radius: 0;
+            }
+
+            .tab-button.active {
+                border-bottom-color: #1a1a1a;
+            }
+
+            .buildings-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .card-content {
+                padding: 30px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                font-weight: 400;
+                color: #1a1a1a;
+                text-align: center;
+                max-width: 600px;
+                margin: 0 auto 60px;
+                letter-spacing: -0.01em;
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div></div>
+            <h1 class="title">Qatar's Architectural Heritage </p>
+                <p>
+                    التراث المعماري في قطر</h1>
+            <div class="logo">
+                <img src="data:image/jpeg;base64,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""
+            </div>
+ 
+        </header>
+
+        <p class="subtitle">Digital archive of Doha's architectural landscape in the present and the past
+        </p>
+        <nav class="nav-tabs">
+            
+            <button class="tab-button active" onclick="showTab('new-buildings')">Modernist Buildings</button>
+<button class="tab-button" onclick="showTab('reading-list')">Reading List</button>
+            <button class="tab-button" onclick="showTab('concept')">About</button>
+        </nav>
+
+
+        <div id="new-buildings" class="tab-content active">
+            <h2 class="section-title">Modernist architecture in Qatar reflects a mix of mid-20th-century international design ideologies with regional identity. 
+                As Qatar transitioned from a modest pearling economy to a wealthy petrostate in the second half of the 20th century, it adopted modernist architecture as a symbol of progress and nation-building.</h2>
+            <div class="archive-meta">
+                <span class="archive-count" id="new-count">Loading...</span>
+                <span class="archive-filter">Current Selection</span>
+            </div>
+            <div class="buildings-grid" id="new-buildings-grid">
+                <div class="loading">Loading buildings data...</div>
+            </div>
+            
+            <div class="map-container">
+                <h3 class="map-title">Project Locations</h3>
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <div id="concept" class="tab-content">
+            <div class="concept-content">
+                <h2>What is it all about?</h2>
+                <p>
+                    A digital platform dedicated to exploring the legacy, transformation, and current status of modernist architecture in Qatar.
+                <p>
+                    <strong>Vision:</strong> To understand how modernist architecture in Qatar can be a part of living heritage that shapes national identity, cultural memory, and future possibilities.
+                </p>
+                <p>
+                    <strong>Mission:</strong> To document, interpret, and advocate for Qatar's modernist architectural legacy by producing accessible, engaging, and critical content.
+                <p>
+                    The main purpose of the project is to amplify architectural voices, uncover stories behind these buildings, and engage the public, scholars, and policymakers in meaningful conversations about what should be remembered, preserved, or reimagined.
+                <p>
+                    This project was created as a part of the class Digital Humanities at the Free University in Berlin by Elizaveta Fokina.
+            
+<p>If you have questions, ideas, or contributions related to this project, feel free to reach out via <a href="mailto:elizaveta.fokina@fu-berlin.de">elizaveta.fokina@fu-berlin.de</a>.</p>
+            </div>
+        </div>
+    
+        <div id="reading-list" class="tab-content">
+            <div class="concept-content">
+                <h2>Reading List</h2>
+                <p>This section will include relevant academic resources, articles, and books on architecture, heritage preservation, and urban development in Qatar and the Gulf region.</p>
+                <p>• Abu-Lughod, Janet L. "The Islamic City – Historic Myth, Islamic Essence, and Contemporary Relevance." International Journal of Middle East Studies 19, no. 2 (May 1987): 155–76.<p></p>
+                • Adham, Khaled. "Rediscovering the Island: Doha's Urbanity from Pearls to Spectacle," in The Evolving Arab City. Tradition, Modernity and Urban Development, ed. Yasser Elsheshtawy (Oxford: Routledge, 2008), 218-57.<p></p>
+                    
+                • Alraouf, Ali A. "Towards a Holistic Interpretation of Resilient Cities' Concept: The Case of Doha, Qatar." Journal of Design for Resilience in Architecture and Planning 2, no. 2 (August 1, 2021): 139–56.<p></p>
+                    
+                • Exell, Karen, and Trinidad Rico. "'There Is No Heritage in Qatar': Orientalism, Colonialism and Other Problematic Histories." World archaeology 45.4 (2013): 670–685.<p></p>
+                    
+                • Fabbri, Roberto, and Sultan Sooud Al-Qassemi. Urban Modernity in the Contemporary Gulf : Obsolescence and Opportunities / Edited by Roberto Fabbri, Sultan Sooud Al-Qassemi. 1 ed. London: Routledge, 2022.<p></p>
+                    
+                • Fletcher, Richard, and Robert A. Carter. "Mapping the Growth of an Arabian Gulf Town: The Case of Doha, Qatar." Journal of the Economic and Social History of the Orient 60, no. 4 (2017): 420–87.<p></p>
+                    
+                • Ibrahim Mohammed Jaidah and Malikaa Bourennane, The History of Qatari Architecture from 1800 to 1950 (Milan: Skira Editore, 2010). 336 p. <p></p>
+                    
+                • Mansour, Shawky, Mohammed Alahmadi, and Ammar Abulibdeh. "Spatial Assessment of Audience Accessibility to Historical Monuments and Museums in Qatar during the 2022 FIFA World Cup." Transport Policy 127 (October 2022): 116–29.<p></p>
+                    
+                • Trinidad Rico, "Modernism in Qatar: Survival through reuse", in Urban modernity in the contemporary Gulf: Obsolescence and opportunities, eds. Roberto Fabbri and Sultan Sooud Al-Qassemi (Abingdon: Routledge, 2022), 226–245.</p>
+                    
+            </div>
+        </div>
+
+    <script>
+        // CSV data for map locations
+        const csvData = `Title,Latitude,Longitude
+Sheraton Hotel,25.318619227588595,51.5361088800054
+Post Office,25.31040937855747,51.51699644232714
+National Theatre,25.305178481388598,51.51670131864548
+Qatar University,25.375712357770535,51.48876288357164
+Fire Station,25.30252387187587,51.507585868223934`;
+
+        // Configuration - Keep the original Google Sheets integration
+        const SHEETS_CONFIG = {
+            newBuildings: 'https://opensheet.elk.sh/1mPtpEwbURnaw733hj8pPXgFqcOW74CbS6FG87PM2C80/Sheet1'
+        };
+
+        // Global variables
+        let newBuildingsData = [];
+        let mapLocationsData = [];
+        let buildingsMap = null;
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMapLocations();
+            loadBuildingsData();
+            
+            // Initialize lightbox
+            if (typeof lightbox !== 'undefined') {
+                lightbox.option({
+                    'resizeDuration': 200,
+                    'wrapAround': true,
+                    'albumLabel': 'Image %1 of %2',
+                    'showImageNumberLabel': true
+                });
+            }
+        });
+
+        // Parse CSV data for map locations
+        function loadMapLocations() {
+            try {
+                const lines = csvData.trim().split('\n');
+                const headers = lines[0].split(',');
+                
+                mapLocationsData = lines.slice(1).map(line => {
+                    const values = line.split(',');
+                    const location = {};
+                    
+                    headers.forEach((header, index) => {
+                        location[header.trim()] = values[index] ? values[index].trim() : '';
+                    });
+                    
+                    return location;
+                });
+                
+            } catch (error) {
+                console.error('Error loading map locations:', error);
+            }
+        }
+
+        // Load data from OpenSheet API (original functionality)
+        async function loadBuildingsData() {
+            try {
+                await loadNewBuildings();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Load new buildings data (original function)
+        async function loadNewBuildings() {
+            try {
+                const response = await fetch(SHEETS_CONFIG.newBuildings);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                newBuildingsData = data.filter(row => row.title && row.title.trim() !== '');
+                renderNewBuildings();
+            } catch (error) {
+                console.error('Error loading new buildings data:', error);
+                showError('new-buildings-grid', 'Failed to load contemporary buildings data. Please check your Google Sheets configuration.');
+            }
+        }
+
+        // Render new buildings cards (original function)
+        function renderNewBuildings() {
+            const container = document.getElementById('new-buildings-grid');
+            const countElement = document.getElementById('new-count');
+            
+            if (newBuildingsData.length === 0) {
+                container.innerHTML = '<div class="loading">No contemporary buildings data found</div>';
+                countElement.textContent = '0 Active Projects';
+                return;
+            }
+
+            countElement.textContent = `${newBuildingsData.length} Active Projects`;
+            
+            container.innerHTML = newBuildingsData.map((item, index) => {
+                const images = parseImages(item.images || item.image);
+                const mainImage = images[0] || 'https://via.placeholder.com/400x300?text=Contemporary+Building';
+                
+                return `
+                    <div class="buildings-card">
+                        ${createImageGallery(images, item.title, `new-${index}`, mainImage)}
+                        <div class="card-content">
+                            <div class="project-year">${item.year || 'Recent'}</div>
+                            <h3 class="card-title">${item.title}</h3>
+                            <p class="card-description">${item.description || ''}</p>
+                            ${item.link ? `<a href="${item.link}" class="card-link" target="_blank" rel="noopener noreferrer">${item.linkText || 'View Project Details'}</a>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Parse images from string (comma-separated URLs)
+        function parseImages(imageString) {
+            if (!imageString) return [];
+            
+            // Split by comma and clean up each URL
+            return imageString.split(',')
+                .map(url => url.trim())
+                .filter(url => url.length > 0);
+        }
+
+        // Create image gallery with lightbox support
+        function createImageGallery(images, title, galleryId, mainImage) {
+            if (images.length === 0) {
+                return `<img src="${mainImage}" alt="${title}" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">`;
+            }
+
+            if (images.length === 1) {
+                return `<a href="${images[0]}" data-lightbox="${galleryId}" data-title="${title}">
+                    <img src="${images[0]}" alt="${title}" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
+                </a>`;
+            }
+
+            // Multiple images - create gallery
+            const mainImageHtml = `<a href="${images[0]}" data-lightbox="${galleryId}" data-title="${title} - Image 1">
+                <img src="${images[0]}" alt="${title}" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
+            </a>`;
+
+            // Hidden images for gallery
+            const hiddenImages = images.slice(1).map((img, index) => 
+                `<a href="${img}" data-lightbox="${galleryId}" data-title="${title} - Image ${index + 2}" style="display: none;"></a>`
+            ).join('');
+
+            return `${mainImageHtml}${hiddenImages}`;
+        }
+
+        // Show error message
+        function showError(containerId, message) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        // Tab switching function
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Initialize map when new buildings tab is shown
+            if (tabName === 'new-buildings') {
+                setTimeout(initializeMap, 100);
+            }
+        }
+
+        // Initialize the map
+        function initializeMap() {
+            // Check if map already exists
+            if (buildingsMap) {
+                buildingsMap.invalidateSize();
+                return;
+            }
+
+            // Initialize the map centered on Qatar
+            buildingsMap = L.map('map').setView([25.2854, 51.5310], 11);
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18
+            }).addTo(buildingsMap);
+
+            // Add markers from CSV data
+            mapLocationsData.forEach(location => {
+                if (location.Latitude && location.Longitude) {
+                    const lat = parseFloat(location.Latitude);
+                    const lng = parseFloat(location.Longitude);
+                    
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        L.marker([lat, lng])
+                            .addTo(buildingsMap)
+                            .bindPopup(`
+                                <div style="text-align: center;">
+                                    <h3 style="margin: 0 0 10px 0; font-family: 'Crimson Text', serif;">${location.Title}</h3>
+                                    <p style="margin: 0; color: #666; font-size: 14px;">Historic Modernist Building</p>
+                                </div>
+                            `);
+                    }
+                }
+            });
+
+            // Also add markers from Google Sheets data if available
+            newBuildingsData.forEach(project => {
+                if (project.latitude && project.longitude) {
+                    const lat = parseFloat(project.latitude);
+                    const lng = parseFloat(project.longitude);
+                    
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        L.marker([lat, lng])
+                            .addTo(buildingsMap)
+                            .bindPopup(`
+                                <div style="text-align: center;">
+                                    <h3 style="margin: 0 0 10px 0; font-family: 'Crimson Text', serif;">${project.title}</h3>
+                                    <p style="margin: 0; color: #666; font-size: 14px;">${project.location || 'Project Location'}</p>
+                                </div>
+                            `);
+                    }
+                }
+            });
+
+            // Fit map to show all markers from CSV
+            if (mapLocationsData.length > 0) {
+                const group = new L.featureGroup();
+                mapLocationsData.forEach(location => {
+                    if (location.Latitude && location.Longitude) {
+                        const lat = parseFloat(location.Latitude);
+                        const lng = parseFloat(location.Longitude);
+                        
+                        if (!isNaN(lat) && !isNaN(lng)) {
+                            group.addLayer(L.marker([lat, lng]));
+                        }
+                    }
+                });
+                
+                if (group.getLayers().length > 0) {
+                    buildingsMap.fitBounds(group.getBounds().pad(0.1));
+                }
+            }
+        }
+
+        // Initialize map when the page loads if the buildings tab is active
+        window.addEventListener('load', function() {
+            if (document.getElementById('new-buildings').classList.contains('active')) {
+                setTimeout(initializeMap, 500);
+            }
+        });
+    </script>
+</body>
+</html>
